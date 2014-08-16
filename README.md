@@ -42,5 +42,30 @@ You'll be prompted for the password to get back into the file for editing.
 
 This `ssl_key` and `ssl_crt` variables I defined in `vars/main.yml` are used inside of the `tasks/main.yml` file to add an SSL certificate onto the server being provisioned.
 
+### 3. Run Ansible Playbooks
 
+Setup a main playbook which uses the roles:
+
+```yml
+---
+- hosts: web
+  roles:
+    - server
+    - ssl
+    - nginx
+    - php
+```
+
+Then you can run it. Note we need to use the `--ask-vault-pass` so that Ansible can decrypt the encrypted variable file:
+
+    ansible-playbook sfh.yml -s -k -u vagrant --ask-vault-pass
+
+The above command is what I use when testing in Vagrant:
+
+* `ansible-playbook` - run a playbook
+* `sfh.yml` - use the `sfh.yml` file
+* `-s` - Use "sudo" for running commands
+* `-k` - Use password authentication (I don't have an SSH keys setup in this case). Since user Vagrant has passwordless sudo abilities, this technically isn't needed to run commands, but we need to tell Ansible not to assume that we're using key-based authentication
+* `-u vagrant` - Use user "vagrant" when running commands
+* `--ask-vault-pass` - Ask the Vault password so Ansible can read encrypted files
 
