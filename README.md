@@ -51,6 +51,7 @@ Setup a main playbook which uses the roles:
 - hosts: web
   roles:
     - server
+    - user
     - ssl
     - nginx
     - php
