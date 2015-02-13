@@ -1,26 +1,14 @@
 ---
-- name: Put Unencrypted Key File
-  shell: "echo '{{ ssl_key }}' > /tmp/sfh.key"
-
-- name: Put Unencrypted Cert File
-  shell: "echo '{{ ssl_crt }}' > /tmp/sfh.crt"
-
 - name: Create SFH SSL Directry
   file: dest=/etc/ssl/sfh mode=755 state=directory owner=root group=root
   register: ssldir
 
 - name: Upload Unencrypted Key File
   when: ssldir|success
-  copy: src=/tmp/sfh.key dest=/etc/ssl/sfh/sfh.key
+  no_log: True
+  copy: content="{{ ssl_key }}" dest=/etc/ssl/sfh/sfh.key owner=root group=root
 
 - name: Upload Unencrypted Cert File
   when: ssldir|success
-  copy: src=/tmp/sfh.crt dest=/etc/ssl/sfh/sfh.crt
-
-- name: Delete Unencrypted Key File
-  when: ssldir|success
-  file: path=/tmp/sfh.key state=absent
-
-- name: Delete Unencrypted Cert File
-  when: ssldir|success
-  file: path=/tmp/sfh.crt state=absent
+  no_log: True
+  copy: content="{{ ssl_crt }}" dest=/etc/ssl/sfh/sfh.crt owner=root group=root
